@@ -2,8 +2,8 @@ import fastifyRateLimit from '@fastify/rate-limit';
 import { APIChatInputApplicationCommandInteraction, APIInteraction, InteractionResponseType, InteractionType } from 'discord-api-types/v10';
 import { verifyKey } from 'discord-interactions';
 import { fastify, FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { CommandContext } from '.';
 import type { Suki } from '../Suki';
-import { CommandContext } from './CommandContext';
 
 class WebServer {
   client: Suki;
@@ -57,7 +57,7 @@ class WebServer {
   }
 
   async handleApplicationCommand(context: CommandContext) {
-    const command = this.client.commands.find(x => x.rawName === context.rawData.name);
+    const command = this.client.commands.find(x => x.data.name === context.rawData.name);
     if (!command) return;
 
     try {
