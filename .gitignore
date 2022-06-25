@@ -46,6 +46,7 @@ typings/
 
 # TypeScript cache
 *.tsbuildinfo
+build/
 
 # Optional npm cache directory
 .npm
@@ -69,6 +70,7 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
+config.ts
 .env
 .env.test
 
