@@ -1,5 +1,5 @@
 import fastifyRateLimit from '@fastify/rate-limit';
-import { APIChatInputApplicationCommandInteraction, APIInteraction, InteractionResponseType, InteractionType } from 'discord-api-types/v10';
+import { APIApplicationCommandInteraction, APIInteraction, InteractionResponseType, InteractionType } from 'discord-api-types/v10';
 import { verifyKey } from 'discord-interactions';
 import { fastify, FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { CommandContext } from '.';
@@ -40,7 +40,7 @@ class WebServer {
 
     const interaction = request.body as APIInteraction;
 
-    const ctx = new CommandContext(interaction as APIChatInputApplicationCommandInteraction, this.client, response);
+    const ctx = new CommandContext(interaction as APIApplicationCommandInteraction, this.client, response);
 
     switch (interaction.type) {
       case InteractionType.Ping:
@@ -57,7 +57,12 @@ class WebServer {
   }
 
   async handleApplicationCommand(context: CommandContext) {
-    const command = this.client.commands.find(x => x.data.name === context.rawData.name);
+    const command = this.client.commands.find(x => {
+      if (x.data.name === context.rawData.name) return true;
+      if (x.executorData?.some(exec => exec.name === context.rawData.name)) return true;
+      return false;
+    });
+
     if (!command) return;
 
     try {

@@ -1,6 +1,5 @@
 import {
-  APIChatInputApplicationCommandInteraction,
-  APIChatInputApplicationCommandInteractionData,
+  APIApplicationCommandInteraction,
   APIInteractionResponseCallbackData,
   InteractionResponseType,
   RESTPatchAPIChannelMessageResult,
@@ -13,12 +12,12 @@ import type { Suki } from '../Suki';
 export type MessageSend = string | RESTPostAPIChannelMessageJSONBody;
 
 class CommandContext {
-  interaction: APIChatInputApplicationCommandInteraction;
-  rawData: APIChatInputApplicationCommandInteractionData;
+  interaction: APIApplicationCommandInteraction;
+  rawData: APIApplicationCommandInteraction['data'];
   client: Suki;
   response: FastifyReply;
 
-  constructor(interaction: APIChatInputApplicationCommandInteraction, client: Suki, response: FastifyReply) {
+  constructor(interaction: APIApplicationCommandInteraction, client: Suki, response: FastifyReply) {
     this.interaction = interaction;
     this.rawData = interaction.data;
     this.client = client;
@@ -56,7 +55,8 @@ class CommandContext {
         method: 'POST',
         headers: {
           Authorization: `Bot ${this.client.config.client.token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'User-Agent': 'DiscordBot (https://github.com/whoisniskii/Suki-Rewrite, 0.0.1)'
         },
         body: this.#transformContent(content)
       })
@@ -71,7 +71,8 @@ class CommandContext {
         method: 'PATCH',
         headers: {
           Authorization: `Bot ${this.client.config.client.token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'User-Agent': 'DiscordBot (https://github.com/whoisniskii/Suki-Rewrite, 0.0.1)'
         },
         body: this.#transformContent(content)
       })
