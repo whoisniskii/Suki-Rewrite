@@ -53,6 +53,7 @@ class CommandContext {
   async createMessage(channelId: string, content: MessageSend): Promise<RESTPostAPIChannelMessageResult | null> {
     const data = await this.client
       .request(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+        method: 'POST',
         headers: {
           Authorization: `Bot ${this.client.config.client.token}`,
           'Content-Type': 'application/json'
