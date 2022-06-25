@@ -40,6 +40,10 @@ class CommandContext {
     return this.interaction.guild_id;
   }
 
+  get database() {
+    return this.client.database;
+  }
+
   replyMessage(content: string | APIInteractionResponseCallbackData) {
     const data = typeof content === 'string' ? { content } : content;
 
