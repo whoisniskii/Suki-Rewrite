@@ -6,7 +6,6 @@ export default class PingCommand extends Command {
   constructor(client: Suki) {
     super(client);
 
-    this.rawName = 'ping';
     this.data = { name: 'ping', description: 'Shows the bot ping', type: ApplicationCommandType.ChatInput, options: [] };
   }
 

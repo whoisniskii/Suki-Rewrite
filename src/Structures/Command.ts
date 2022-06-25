@@ -8,11 +8,9 @@ export type CommandExecuteOptions = { context: CommandContext };
 export class Command {
   client: Suki;
   data: RESTPostAPIChatInputApplicationCommandsJSONBody;
-  rawName: string;
 
   constructor(client: Suki) {
     this.client = client;
-    this.rawName = '';
   }
 
   execute({ context }: CommandExecuteOptions): unknown {
