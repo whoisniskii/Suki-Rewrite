@@ -12,15 +12,15 @@ export default class Logger {
     return `${Logger.Colors.BLUE}[${currentDate}]${Logger.Colors.RESET}`;
   }
 
-  error(content: string, path = 'ERROR') {
+  error(content: unknown, path = 'ERROR') {
     return console.error(`${Logger.currentTime} - ${Logger.Colors.RED}[${path}]${Logger.Colors.RESET} ${content}`);
   }
 
-  info(content: string, path = 'INFO') {
+  info(content: unknown, path = 'INFO') {
     return console.log(`${Logger.currentTime} - ${Logger.Colors.GREEN}[${path}]${Logger.Colors.RESET} ${content}`);
   }
 
-  warn(content: string, path = 'WARN') {
+  warn(content: unknown, path = 'WARN') {
     return console.warn(`${Logger.currentTime} - ${Logger.Colors.YELLOW}[${path}]${Logger.Colors.RESET} ${content}`);
   }
 }

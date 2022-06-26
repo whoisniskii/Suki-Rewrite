@@ -10,6 +10,6 @@ export default class PingExecutor extends Command {
   }
 
   execute({ context }: CommandExecuteOptions) {
-    context.replyInteraction({ content: 'pong' });
+    context.replyInteraction({ content: 'Pong' });
   }
 }

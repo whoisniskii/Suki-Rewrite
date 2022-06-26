@@ -1,4 +1,5 @@
 import fastifyRateLimit from '@fastify/rate-limit';
+import * as sentry from '@sentry/node';
 import { APIApplicationCommandInteraction, APIInteraction, InteractionResponseType, InteractionType } from 'discord-api-types/v10';
 import { verifyKey } from 'discord-interactions';
 import { fastify, FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
@@ -67,8 +68,22 @@ class WebServer {
 
     try {
       await command.execute({ context });
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      this.client.logger.error(err, 'WEBSERVER');
+
+      sentry.withScope(scope => {
+        scope.setExtras({
+          command: command.data.name,
+          args: JSON.stringify(context.rawData.resolved),
+          channelId: context.channelId,
+          user: `${context.user?.id}#${context.user?.discriminator} (${context.user?.username})`
+        });
+        sentry.captureException(err);
+      });
+      context.replyInteraction({
+        content: 'An error occurred while executing this command.',
+        flags: 64
+      });
     }
   }
 }

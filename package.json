@@ -13,6 +13,7 @@
   "dependencies": {
     "@fastify/rate-limit": "^7.0.0",
     "@prisma/client": "^3.15.2",
+    "@sentry/node": "^7.3.0",
     "discord-api-types": "^0.35.0",
     "discord-interactions": "^3.2.0",
     "fastify": "^4.1.0",

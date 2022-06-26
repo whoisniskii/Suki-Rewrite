@@ -1,4 +1,4 @@
-import { ApplicationCommandType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
 import { Command, CommandExecuteOptions } from '../../Structures';
 import type { Suki } from '../../Suki';
 
@@ -6,7 +6,26 @@ export default class UserExecutor extends Command {
   constructor(client: Suki) {
     super(client);
 
-    this.data = { name: 'avatar', description: 'Shows the user avatar', type: ApplicationCommandType.ChatInput, options: [] };
+    this.data = {
+      name: 'user',
+      description: 'Shows the user infos',
+      type: ApplicationCommandType.ChatInput,
+      options: [
+        {
+          name: 'avatar',
+          type: ApplicationCommandOptionType.Subcommand,
+          description: 'Shows the user avatar',
+          options: [
+            {
+              name: 'user',
+              description: 'The user to show the avatar',
+              type: ApplicationCommandOptionType.User,
+              required: false
+            }
+          ]
+        }
+      ]
+    };
     this.executorData = [
       {
         name: 'View avatar',

@@ -1,3 +1,4 @@
+import * as sentry from '@sentry/node';
 import { lstat, readdir } from 'node:fs/promises';
 import { request } from 'undici';
 import { Command, Database, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './Structures';
@@ -69,8 +70,8 @@ class Suki {
   }
 
   registerCommands() {
-    const rawCmds = this.commands.map(x => x.data);
-    const rawExecutors = this.commands.map(x => x.executorData);
+    const rawCmds = this.commands.filter(x => x.data).map(x => x.data);
+    const rawExecutors = this.commands.filter(x => x.executorData).map(x => x.executorData);
 
     this.request(`https://discord.com/api/v10/applications/${this.config.client.id}/commands`, {
       method: 'PUT',
@@ -87,6 +88,18 @@ class Suki {
   async start() {
     await this.loadSlashCommands();
     await this.loadCommandExecutors();
+    if (this.config.interactions.sentryDSN) {
+      sentry.init({
+        dsn: this.config.interactions.sentryDSN,
+        release: 'Suki v0.0.1'
+      });
+      process.on('unhandledRejection', err => {
+        sentry.captureException(err);
+      });
+
+      this.logger.info('Sentry initialized successfully.', 'SENTRY');
+    }
+
     this.server.start();
   }
 

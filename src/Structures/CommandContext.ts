@@ -48,10 +48,10 @@ class CommandContext {
     return this.client.database;
   }
 
-  replyInteraction(content: string | APIInteractionResponseCallbackData) {
+  replyInteraction(data: APIInteractionResponseCallbackData) {
     this.response.status(200).send({
       type: InteractionResponseType.ChannelMessageWithSource,
-      data: content
+      data
     });
   }
 

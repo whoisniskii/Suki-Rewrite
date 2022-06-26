@@ -5,6 +5,7 @@ export default {
   },
   interactions: {
     port: 3000,
-    publicKey: 'YOUR PUBLIC KEY'
+    publicKey: 'YOUR PUBLIC KEY',
+    sentryDSN: 'YOUR SENTRY DSN'
   }
 };
