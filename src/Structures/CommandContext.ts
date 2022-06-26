@@ -48,10 +48,6 @@ class CommandContext {
     return this.interaction.guild_id;
   }
 
-  get database() {
-    return this.client.database;
-  }
-
   replyInteraction(data: APIInteractionResponseCallbackData) {
     this.response.status(200).send({
       type: InteractionResponseType.ChannelMessageWithSource,

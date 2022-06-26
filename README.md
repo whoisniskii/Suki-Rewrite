@@ -17,11 +17,6 @@
 yarn
 ```
 
-### Generate prisma schema with:
-```bash
-yarn generate
-```
-
 ### Run the bot using:
 ```bash
 yarn start

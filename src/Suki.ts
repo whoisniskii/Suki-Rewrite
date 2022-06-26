@@ -1,7 +1,7 @@
 import * as sentry from '@sentry/node';
 import { lstat, readdir } from 'node:fs/promises';
 import { request } from 'undici';
-import { Command, Database, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './Structures';
+import { Command, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './Structures';
 import Logger from './Utils/Logger';
 // @ts-ignore
 import config from '../config';
@@ -10,7 +10,6 @@ class Suki {
   config: typeof config;
   logger: Logger;
   request: typeof request;
-  database: Database;
   commands: Command[];
   executors: ExecutorManager;
   server: WebServer;
@@ -19,7 +18,6 @@ class Suki {
     this.config = config;
     this.logger = new Logger();
     this.request = request;
-    this.database = new Database(this);
 
     this.commands = [];
     this.executors = new ExecutorManager();
