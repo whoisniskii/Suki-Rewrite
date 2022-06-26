@@ -70,8 +70,11 @@ class Suki {
   }
 
   registerCommands() {
-    const rawCmds = this.commands.filter(x => x.data).map(x => x.data);
-    const rawExecutors = this.commands.filter(x => x.executorData).map(x => x.executorData);
+    const rawCmds = this.commands.map(x => x.data).filter(x => typeof x !== 'undefined');
+    const rawExecutors = this.commands
+      .map(x => x.executorData)
+      .filter(x => typeof x !== 'undefined')
+      .flat(Infinity);
 
     this.request(`https://discord.com/api/v10/applications/${this.config.client.id}/commands`, {
       method: 'PUT',
@@ -80,7 +83,7 @@ class Suki {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify([...rawCmds, ...rawExecutors])
-    }).catch(console.log);
+    }).catch(err => sentry.captureException(err));
 
     this.logger.info(`Posted ${this.commands.length} commands to Discord!`, 'COMMANDS');
   }
@@ -88,17 +91,13 @@ class Suki {
   async start() {
     await this.loadSlashCommands();
     await this.loadCommandExecutors();
-    if (this.config.interactions.sentryDSN) {
-      sentry.init({
-        dsn: this.config.interactions.sentryDSN,
-        release: 'Suki v0.0.1'
-      });
-      process.on('unhandledRejection', err => {
-        sentry.captureException(err);
-      });
 
-      this.logger.info('Sentry initialized successfully.', 'SENTRY');
-    }
+    sentry.init({
+      dsn: this.config.interactions.sentryDSN,
+      release: 'Suki v0.0.1'
+    });
+    process.on('unhandledRejection', err => sentry.captureException(err));
+    this.logger.info('Sentry initialized successfully.', 'SENTRY');
 
     this.server.start();
   }
