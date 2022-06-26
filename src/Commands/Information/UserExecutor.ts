@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
-import { Command, CommandExecuteOptions } from '../../Structures';
+import { ChatInputRunOptions, Command } from '../../Structures';
 import type { Suki } from '../../Suki';
 
 export default class UserExecutor extends Command {
@@ -34,7 +34,7 @@ export default class UserExecutor extends Command {
     ];
   }
 
-  async execute({ context }: CommandExecuteOptions) {
+  async execute({ context }: ChatInputRunOptions) {
     await this.client.executors.retreive(context.interaction)?.execute({ context });
   }
 }

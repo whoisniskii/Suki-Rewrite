@@ -1,5 +1,7 @@
 import {
   APIApplicationCommandInteraction,
+  APIChatInputApplicationCommandInteraction,
+  APIContextMenuInteraction,
   APIInteractionResponseCallbackData,
   APIUser,
   InteractionResponseType,
@@ -10,14 +12,16 @@ import {
 } from 'discord-api-types/v10';
 import type { FastifyReply } from 'fastify';
 import type { Suki } from '../Suki';
+import type { BaseCommandExecuteOptions } from './Command';
 
 export type MessageSend = string | RESTPostAPIChannelMessageJSONBody;
+export type ChatInputRunOptions = Omit<BaseCommandExecuteOptions & BaseCommandExecuteOptions['context'], 'interaction'> & { context: { interaction: APIChatInputApplicationCommandInteraction } };
 
 export const DISCORD_API_URL = 'https://discord.com/api/v10';
 
 class CommandContext {
-  interaction: APIApplicationCommandInteraction;
-  rawData: APIApplicationCommandInteraction['data'];
+  interaction: APIChatInputApplicationCommandInteraction | APIContextMenuInteraction;
+  rawData: CommandContext['interaction']['data'];
   client: Suki;
   response: FastifyReply;
 

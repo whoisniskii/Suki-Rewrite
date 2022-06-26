@@ -1,6 +1,5 @@
-import { isContextMenuApplicationCommandInteraction } from 'discord-api-types/utils/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
-import type { CommandExecuteOptions } from '../../../Structures';
+import type { ExecutorRunOptions } from '../../../Structures';
 import { Executor } from '../../../Structures/Executor';
 import type { Suki } from '../../../Suki';
 
@@ -12,8 +11,7 @@ export default class UserAvatarUserExecutor extends Executor {
     this.type = 'user';
   }
 
-  async execute({ context }: CommandExecuteOptions) {
-    if (!isContextMenuApplicationCommandInteraction(context.interaction)) return;
+  async execute({ context }: ExecutorRunOptions) {
     context.showLoading(true);
 
     const user = await context.fetchUser(context.interaction.data.target_id);

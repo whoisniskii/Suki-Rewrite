@@ -1,5 +1,5 @@
 import type { Suki } from '../Suki';
-import type { CommandExecuteOptions } from './Command';
+import type { BaseCommandExecuteOptions } from './Command';
 
 export type SukiExecutor = { default: new (_client: Suki) => Executor };
 
@@ -14,7 +14,7 @@ class Executor {
     this.client = client;
   }
 
-  execute({ context }: CommandExecuteOptions): unknown {
+  execute({ context }: BaseCommandExecuteOptions): unknown {
     return { context };
   }
 }

@@ -1,5 +1,5 @@
 import { ApplicationCommandType } from 'discord-api-types/v10';
-import { Command, CommandExecuteOptions } from '../../Structures';
+import { ChatInputRunOptions, Command } from '../../Structures';
 import type { Suki } from '../../Suki';
 
 export default class PingExecutor extends Command {
@@ -9,7 +9,7 @@ export default class PingExecutor extends Command {
     this.data = { name: 'ping', description: 'Shows the bot ping', type: ApplicationCommandType.ChatInput, options: [] };
   }
 
-  execute({ context }: CommandExecuteOptions) {
+  execute({ context }: ChatInputRunOptions) {
     context.replyInteraction({ content: 'Pong' });
   }
 }

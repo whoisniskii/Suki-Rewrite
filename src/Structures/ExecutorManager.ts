@@ -1,7 +1,9 @@
-import { APIApplicationCommandInteraction, ApplicationCommandType } from 'discord-api-types/v10';
+import { APIApplicationCommandInteraction, APIContextMenuInteraction, ApplicationCommandType } from 'discord-api-types/v10';
+import type { BaseCommandExecuteOptions } from './Command';
 import type { Executor } from './Executor';
 
 export type ExecutorType = 'slash' | 'user' | 'message';
+export type ExecutorRunOptions = Omit<BaseCommandExecuteOptions & BaseCommandExecuteOptions['context'], 'interaction'> & { context: { interaction: APIContextMenuInteraction } };
 
 export { ExecutorManager };
 

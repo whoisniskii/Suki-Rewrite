@@ -3,7 +3,7 @@ import type { Suki } from '../Suki';
 import type { CommandContext } from './CommandContext';
 
 export type SukiCommand = { default: new (_client: Suki) => Command };
-export type CommandExecuteOptions = { context: CommandContext };
+export type BaseCommandExecuteOptions = { context: CommandContext };
 
 export class Command {
   client: Suki;
@@ -14,7 +14,7 @@ export class Command {
     this.client = client;
   }
 
-  execute({ context }: CommandExecuteOptions): unknown {
+  execute({ context }: BaseCommandExecuteOptions): unknown {
     return { context };
   }
 }
