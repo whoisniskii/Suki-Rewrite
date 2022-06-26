@@ -26,6 +26,10 @@ class Suki {
     this.server = new WebServer(this);
   }
 
+  get inviteUrl() {
+    return `https://discord.com/api/oauth2/authorize?client_id=${this.config.client.id}&permissions=1516056734967&scope=applications.commands%20bot`;
+  }
+
   async loadSlashCommands() {
     const categories = await readdir('./src/Commands/');
     // Load commands from the category
