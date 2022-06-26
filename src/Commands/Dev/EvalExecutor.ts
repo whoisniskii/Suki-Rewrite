@@ -37,7 +37,7 @@ export default class EvalExecutor extends Command {
     };
 
     try {
-      const data = context.interaction.data.options?.find(x => x.name === 'code') as APIApplicationCommandInteractionDataStringOption;
+      const data = context.interaction.data.options?.find(x => x.type === ApplicationCommandOptionType.String) as APIApplicationCommandInteractionDataStringOption;
       const evaluate = await eval(data.value);
 
       context.editInteraction({
