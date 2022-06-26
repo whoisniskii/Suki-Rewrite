@@ -1,15 +1,19 @@
 import {
   APIApplicationCommandInteraction,
   APIInteractionResponseCallbackData,
+  APIUser,
   InteractionResponseType,
   RESTPatchAPIChannelMessageResult,
   RESTPostAPIChannelMessageJSONBody,
-  RESTPostAPIChannelMessageResult
+  RESTPostAPIChannelMessageResult,
+  Routes
 } from 'discord-api-types/v10';
 import type { FastifyReply } from 'fastify';
 import type { Suki } from '../Suki';
 
 export type MessageSend = string | RESTPostAPIChannelMessageJSONBody;
+
+export const DISCORD_API_URL = 'https://discord.com/api/v10';
 
 class CommandContext {
   interaction: APIApplicationCommandInteraction;
@@ -44,34 +48,16 @@ class CommandContext {
     return this.client.database;
   }
 
-  replyMessage(content: string | APIInteractionResponseCallbackData) {
-    const data = typeof content === 'string' ? { content } : content;
-
+  replyInteraction(content: string | APIInteractionResponseCallbackData) {
     this.response.status(200).send({
       type: InteractionResponseType.ChannelMessageWithSource,
-      data
+      data: content
     });
   }
 
-  async createMessage(channelId: string, content: MessageSend): Promise<RESTPostAPIChannelMessageResult | null> {
-    const data = await this.client
-      .request(`https://discord.com/api/v10/channels/${channelId}/messages`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bot ${this.client.config.client.token}`,
-          'Content-Type': 'application/json',
-          'User-Agent': 'DiscordBot (https://github.com/whoisniskii/Suki-Rewrite, 0.0.1)'
-        },
-        body: this.#transformContent(content)
-      })
-      .then(res => res.body.json());
-
-    return data;
-  }
-
-  async editOriginalMessage(channelId: string, messageId: string, content: MessageSend): Promise<RESTPatchAPIChannelMessageResult | null> {
-    const data = await this.client
-      .request(`https://discord.com/api/v10/channels/${channelId}/messages/${messageId}`, {
+  async editInteraction(content: string | APIInteractionResponseCallbackData) {
+    const response = (await this.client
+      .request(DISCORD_API_URL + Routes.webhookMessage(this.interaction.application_id, this.interaction.token, '@original'), {
         method: 'PATCH',
         headers: {
           Authorization: `Bot ${this.client.config.client.token}`,
@@ -80,16 +66,69 @@ class CommandContext {
         },
         body: this.#transformContent(content)
       })
-      .then(res => res.body.json());
+      .then(res => res.body.json())) as APIInteractionResponseCallbackData;
+
+    return response;
+  }
+
+  showLoading(ephemeral = false) {
+    this.response.status(200).send({
+      type: InteractionResponseType.DeferredChannelMessageWithSource,
+      data: {
+        flags: ephemeral ? 64 : undefined
+      }
+    });
+  }
+
+  async createMessage(channelId: string, content: MessageSend): Promise<RESTPostAPIChannelMessageResult | null> {
+    const data = (await this.client
+      .request(DISCORD_API_URL + Routes.channelMessages(channelId), {
+        method: 'POST',
+        headers: {
+          Authorization: `Bot ${this.client.config.client.token}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'DiscordBot (https://github.com/whoisniskii/Suki-Rewrite, 0.0.1)'
+        },
+        body: this.#transformContent(content)
+      })
+      .then(res => res.body.json())) as RESTPostAPIChannelMessageResult;
+
+    return data;
+  }
+
+  async editOriginalMessage(channelId: string, messageId: string, content: MessageSend): Promise<RESTPatchAPIChannelMessageResult | null> {
+    const data = (await this.client
+      .request(DISCORD_API_URL + Routes.channelMessage(channelId, messageId), {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bot ${this.client.config.client.token}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'DiscordBot (https://github.com/whoisniskii/Suki-Rewrite, 0.0.1)'
+        },
+        body: this.#transformContent(content)
+      })
+      .then(res => res.body.json())) as RESTPatchAPIChannelMessageResult;
+
+    return data;
+  }
+
+  async fetchUser(userId: string) {
+    const data = (await this.client
+      .request(DISCORD_API_URL + Routes.user(userId), {
+        method: 'GET',
+        headers: {
+          Authorization: `Bot ${this.client.config.client.token}`,
+          'Content-Type': 'application/json',
+          'User-Agent': 'DiscordBot (https://github.com/whoisniskii/Suki-Rewrite, 0.0.1)'
+        }
+      })
+      .then(res => res.body.json())) as APIUser;
 
     return data;
   }
 
   #transformContent(content: MessageSend) {
-    if (typeof content === 'string') {
-      return content;
-    }
-
+    if (typeof content === 'string') return content;
     return JSON.stringify(content);
   }
 }
