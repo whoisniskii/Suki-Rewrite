@@ -33,7 +33,7 @@ class CommandContext {
   }
 
   get user() {
-    return this.interaction.user;
+    return this.interaction.member?.user || this.interaction.user;
   }
 
   get member() {
