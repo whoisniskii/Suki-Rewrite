@@ -22,6 +22,7 @@ export default class UserBannerSlashExecutor extends Executor {
 
     if (!user.banner) {
       context.editInteraction({ content: 'This user has no banner.' });
+      return;
     }
 
     const bannerUrl = `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.${user.banner?.startsWith('a_') ? 'gif' : 'png'}?size=512`;
