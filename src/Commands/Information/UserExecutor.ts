@@ -23,12 +23,29 @@ export default class UserExecutor extends Command {
               required: false
             }
           ]
+        },
+        {
+          name: 'banner',
+          type: ApplicationCommandOptionType.Subcommand,
+          description: 'Shows the user banner',
+          options: [
+            {
+              name: 'user',
+              description: 'The user to show the banner',
+              type: ApplicationCommandOptionType.User,
+              required: false
+            }
+          ]
         }
       ]
     };
     this.executorData = [
       {
         name: 'View avatar',
+        type: ApplicationCommandType.User
+      },
+      {
+        name: 'View banner',
         type: ApplicationCommandType.User
       }
     ];

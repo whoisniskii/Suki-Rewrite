@@ -3,7 +3,7 @@ import type { ChatInputRunOptions } from '../../../Structures';
 import { Executor } from '../../../Structures/Executor';
 import type { Suki } from '../../../Suki';
 
-export default class UserAvatarSlashExecutor extends Executor {
+export default class UserBannerSlashExecutor extends Executor {
   constructor(client: Suki) {
     super(client);
 
@@ -14,19 +14,17 @@ export default class UserAvatarSlashExecutor extends Executor {
   async execute({ context }: ChatInputRunOptions) {
     context.showLoading(false);
 
-    const data = context.interaction.data.options?.find(x => x.type === ApplicationCommandOptionType.Subcommand && x.name === 'avatar') as APIApplicationCommandInteractionDataSubcommandOption;
+    const data = context.interaction.data.options?.find(x => x.type === ApplicationCommandOptionType.Subcommand && x.name === 'banner') as APIApplicationCommandInteractionDataSubcommandOption;
 
     const userId = (data.options?.find(x => x.type === ApplicationCommandOptionType.User)?.value as string) ?? context.user?.id;
 
     const user = await context.fetchUser(userId);
 
-    let avatarUrl: string;
-
-    if (user.avatar) {
-      avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'png'}?size=512`;
-    } else {
-      avatarUrl = `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator) % 5}.png`;
+    if (!user.banner) {
+      context.editInteraction({ content: 'This user has no banner.' });
     }
+
+    const bannerUrl = `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.${user.banner?.startsWith('a_') ? 'gif' : 'png'}?size=512`;
 
     context.editInteraction({
       embeds: [
@@ -34,7 +32,7 @@ export default class UserAvatarSlashExecutor extends Executor {
           color: 10105592,
           title: user.username,
           image: {
-            url: avatarUrl
+            url: bannerUrl
           },
           footer: {
             text: `${context.user?.username}#${context.user?.discriminator}`,
@@ -53,7 +51,7 @@ export default class UserAvatarSlashExecutor extends Executor {
               type: ComponentType.Button,
               style: ButtonStyle.Link,
               label: 'Open in browser',
-              url: avatarUrl
+              url: bannerUrl
             }
           ]
         }
