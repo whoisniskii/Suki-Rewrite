@@ -1,7 +1,8 @@
 import * as sentry from '@sentry/node';
+import { Routes } from 'discord-api-types/v10';
 import { lstat, readdir } from 'node:fs/promises';
 import { request } from 'undici';
-import { Command, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './Structures';
+import { Command, DISCORD_API_URL, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './Structures';
 import Logger from './Utils/Logger';
 // @ts-ignore
 import config from '../config';
@@ -71,14 +72,14 @@ class Suki {
     this.logger.info('Executors loaded successfully.', 'EXECUTORS');
   }
 
-  registerCommands() {
+  async registerCommands() {
     const rawCmds = this.commands.map(x => x.data).filter(x => typeof x !== 'undefined');
     const rawExecutors = this.commands
       .map(x => x.executorData)
       .filter(x => typeof x !== 'undefined')
       .flat(Infinity);
 
-    this.request(`https://discord.com/api/v10/applications/${this.config.client.id}/commands`, {
+    await this.request(DISCORD_API_URL + Routes.applicationCommands(this.config.client.id), {
       method: 'PUT',
       headers: {
         Authorization: `Bot ${this.config.client.token}`,
