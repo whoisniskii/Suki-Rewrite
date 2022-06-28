@@ -39,19 +39,33 @@ class WebServer {
 
     if (!isValidRequest) return response.code(401).send('Invalid signature');
 
-    const interaction = request.body as APIInteraction;
+    try {
+      const interaction = request.body as APIInteraction;
 
-    const ctx = new CommandContext(interaction as APIApplicationCommandInteraction, this.client, response);
+      const ctx = new CommandContext(interaction as APIApplicationCommandInteraction, this.client, response);
 
-    switch (interaction.type) {
-      case InteractionType.Ping:
-        response.status(200).send({ type: InteractionResponseType.Pong });
-        break;
-      case InteractionType.ApplicationCommand:
-        this.handleApplicationCommand(ctx);
-        break;
-      default:
-        response.status(400).send({ error: 'Unknown Type' });
+      switch (interaction.type) {
+        case InteractionType.Ping:
+          response.status(200).send({ type: InteractionResponseType.Pong });
+          break;
+        case InteractionType.ApplicationCommand:
+          this.handleApplicationCommand(ctx);
+          break;
+        default:
+          response.status(400).send({ error: 'Unknown Type' });
+      }
+    } catch (error: any) {
+      if (this.client.config.sentryConfig.sentryDSN && this.client.config.sentryConfig.useSentry) {
+        sentry.withScope(scope => {
+          scope.setExtras({
+            request: JSON.stringify(request.body),
+            error: error.message
+          });
+          sentry.captureException(error);
+        });
+      }
+
+      this.client.logger.error(error, 'WEBSERVER');
     }
 
     return null;
@@ -71,15 +85,18 @@ class WebServer {
     } catch (err) {
       this.client.logger.error(err, 'WEBSERVER');
 
-      sentry.withScope(scope => {
-        scope.setExtras({
-          command: command.data.name,
-          args: JSON.stringify(context.rawData.resolved),
-          channelId: context.channelId,
-          user: `${context.user?.id}#${context.user?.discriminator} (${context.user?.username})`
+      if (this.client.config.sentryConfig.sentryDSN && this.client.config.sentryConfig.useSentry) {
+        sentry.withScope(scope => {
+          scope.setExtras({
+            command: command.data.name,
+            args: JSON.stringify(context.rawData.resolved),
+            channelId: context.channelId,
+            user: `${context.user?.id}#${context.user?.discriminator} (${context.user?.username})`
+          });
+          sentry.captureException(err);
         });
-        sentry.captureException(err);
-      });
+      }
+
       context.replyInteraction({
         content: 'An error occurred while executing this command.',
         flags: 64

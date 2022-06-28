@@ -7,7 +7,8 @@ export default {
     port: 3000,
     publicKey: 'YOUR PUBLIC KEY'
   },
-  configs: {
+  sentryConfig: {
+    useSentry: false,
     sentryDSN: 'YOUR SENTRY DSN'
   }
 };

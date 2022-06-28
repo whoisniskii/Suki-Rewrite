@@ -86,7 +86,13 @@ class Suki {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify([...rawCmds, ...rawExecutors])
-    }).catch(err => sentry.captureException(err));
+    }).catch(err => {
+      if (this.config.sentryConfig.sentryDSN && this.config.sentryConfig.useSentry) {
+        sentry.captureException(err);
+      }
+
+      this.logger.error(err, 'REGISTER');
+    });
 
     this.logger.info(`Posted ${this.commands.length} commands to Discord!`, 'COMMANDS');
   }
@@ -95,11 +101,13 @@ class Suki {
     await this.loadSlashCommands();
     await this.loadCommandExecutors();
 
-    sentry.init({
-      dsn: this.config.configs.sentryDSN
-    });
-    process.on('unhandledRejection', err => sentry.captureException(err));
-    this.logger.info('Sentry initialized successfully.', 'SENTRY');
+    if (this.config.sentryConfig.sentryDSN && this.config.sentryConfig.useSentry) {
+      sentry.init({
+        dsn: this.config.sentryConfig.sentryDSN
+      });
+      process.on('unhandledRejection', err => sentry.captureException(err));
+      this.logger.info('Sentry initialized successfully.', 'SENTRY');
+    }
 
     this.server.start();
   }
