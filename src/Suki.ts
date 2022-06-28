@@ -95,8 +95,7 @@ class Suki {
     await this.loadCommandExecutors();
 
     sentry.init({
-      dsn: this.config.interactions.sentryDSN,
-      release: 'Suki v0.0.1'
+      dsn: this.config.configs.sentryDSN
     });
     process.on('unhandledRejection', err => sentry.captureException(err));
     this.logger.info('Sentry initialized successfully.', 'SENTRY');
