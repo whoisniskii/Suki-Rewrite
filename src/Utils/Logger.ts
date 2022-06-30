@@ -9,18 +9,18 @@ export default class Logger {
 
   static get currentTime() {
     const currentDate = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-    return `${Logger.Colors.BLUE}[${currentDate}]${Logger.Colors.RESET}`;
+    return `${Logger.Colors.BLUE}${currentDate}${Logger.Colors.RESET}`;
   }
 
   error(content: unknown, path = 'ERROR') {
-    return console.error(`${Logger.currentTime} - ${Logger.Colors.RED}[${path}]${Logger.Colors.RESET} ${content}`);
+    return console.error(`${Logger.currentTime} - ${Logger.Colors.RED}[ERROR]${Logger.Colors.RESET} - ${Logger.Colors.RED}[${path}]${Logger.Colors.RESET}: ${content}`);
   }
 
   info(content: unknown, path = 'INFO') {
-    return console.log(`${Logger.currentTime} - ${Logger.Colors.GREEN}[${path}]${Logger.Colors.RESET} ${content}`);
+    return console.log(`${Logger.currentTime} - ${Logger.Colors.GREEN}[INFO]${Logger.Colors.RESET} - ${Logger.Colors.BLUE}[${path}]${Logger.Colors.RESET}: ${content}`);
   }
 
   warn(content: unknown, path = 'WARN') {
-    return console.warn(`${Logger.currentTime} - ${Logger.Colors.YELLOW}[${path}]${Logger.Colors.RESET} ${content}`);
+    return console.warn(`${Logger.currentTime} - ${Logger.Colors.YELLOW}[WARN]${Logger.Colors.RESET} - ${Logger.Colors.YELLOW}[${path}]${Logger.Colors.RESET}: ${content}`);
   }
 }

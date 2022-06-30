@@ -24,7 +24,7 @@ class WebServer {
 
     this.router.listen({ port: this.client.config.interactions.port, host: '0.0.0.0' }, (err, address) => {
       if (err) throw err;
-      this.client.logger.info(`Slash Commands Web Server started on ${address}.`, 'WEBSERVER');
+      this.client.logger.info(`Listening for requests at ${address}!`, 'WEBSERVER');
     });
   }
 

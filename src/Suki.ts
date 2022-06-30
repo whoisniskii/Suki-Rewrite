@@ -1,8 +1,8 @@
 import * as sentry from '@sentry/node';
-import { Routes } from 'discord-api-types/v10';
 import { lstat, readdir } from 'node:fs/promises';
 import { request } from 'undici';
-import { Command, DISCORD_API_URL, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './Structures';
+import { Command, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './Structures';
+import { Functions } from './Utils/Functions';
 import Logger from './Utils/Logger';
 // @ts-ignore
 import config from '../config';
@@ -11,6 +11,7 @@ class Suki {
   config: typeof config;
   logger: Logger;
   request: typeof request;
+  functions: Functions;
   commands: Command[];
   executors: ExecutorManager;
   server: WebServer;
@@ -19,6 +20,7 @@ class Suki {
     this.config = config;
     this.logger = new Logger();
     this.request = request;
+    this.functions = new Functions(this);
 
     this.commands = [];
     this.executors = new ExecutorManager();
@@ -70,31 +72,6 @@ class Suki {
     }
 
     this.logger.info('Executors loaded successfully.', 'EXECUTORS');
-  }
-
-  async registerCommands() {
-    const rawCmds = this.commands.map(x => x.data).filter(x => typeof x !== 'undefined');
-    const rawExecutors = this.commands
-      .map(x => x.executorData)
-      .filter(x => typeof x !== 'undefined')
-      .flat(Infinity);
-
-    await this.request(DISCORD_API_URL + Routes.applicationCommands(this.config.client.id), {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bot ${this.config.client.token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify([...rawCmds, ...rawExecutors])
-    }).catch(err => {
-      if (this.config.sentryConfig.sentryDSN && this.config.sentryConfig.useSentry) {
-        sentry.captureException(err);
-      }
-
-      this.logger.error(err, 'REGISTER');
-    });
-
-    this.logger.info(`Posted ${this.commands.length} commands to Discord!`, 'COMMANDS');
   }
 
   async start() {

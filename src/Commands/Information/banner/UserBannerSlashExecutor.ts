@@ -29,20 +29,15 @@ export default class UserBannerSlashExecutor extends Executor {
 
     context.editInteraction({
       embeds: [
-        {
-          color: 10105592,
-          title: user.username,
-          image: {
-            url: bannerUrl
+        this.client.functions.createEmbed(
+          {
+            title: user.username,
+            image: {
+              url: bannerUrl
+            }
           },
-          footer: {
-            text: `${context.user?.username}#${context.user?.discriminator}`,
-            icon_url:
-              `https://cdn.discordapp.com/avatars/${context.user?.id}/${context.user?.avatar}.${context.user?.avatar?.startsWith('a_') ? 'gif' : 'png'}?size=512` ??
-              `https://cdn.discordapp.com/embed/avatars/${Number(context.user?.discriminator) % 5}.png`
-          },
-          timestamp: new Date().toISOString()
-        }
+          user
+        )
       ],
       components: [
         {
