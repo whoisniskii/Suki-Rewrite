@@ -1,6 +1,6 @@
 import type { APIEmbed, APIUser } from 'discord-api-types/v10';
-import type { CommandContext, ExecutorRunOptions } from '../../../structures';
-import { Executor } from '../../../structures/Executor';
+import type { CommandContext, ExecutorRunOptions } from '../../../classes';
+import { Executor } from '../../../classes/Executor';
 import type { Suki } from '../../../Suki';
 
 export default class UserInfoUserExecutor extends Executor {

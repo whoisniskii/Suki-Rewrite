@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
-import { ChatInputRunOptions, Command } from '../../structures';
+import { ChatInputRunOptions, Command } from '../../classes';
 import type { Suki } from '../../Suki';
 
 export default class UserExecutor extends Command {

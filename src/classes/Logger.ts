@@ -1,4 +1,6 @@
-export default class Logger {
+export { Logger };
+
+class Logger {
   static readonly Colors = {
     RESET: '\x1b[0m',
     RED: '\x1b[31m',

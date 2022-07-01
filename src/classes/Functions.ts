@@ -1,10 +1,12 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import * as sentry from '@sentry/node';
 import { APIApplication, APIEmbed, APIUser, Routes } from 'discord-api-types/v10';
-import { DISCORD_API_URL } from '../structures';
+import { DISCORD_API_URL } from '../classes';
 import type { Suki } from '../Suki';
 
-export class Functions {
+export { Functions };
+
+class Functions {
   client: Suki;
 
   constructor(client: Suki) {

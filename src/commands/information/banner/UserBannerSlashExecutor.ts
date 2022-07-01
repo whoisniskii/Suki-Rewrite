@@ -1,6 +1,6 @@
 import { APIApplicationCommandInteractionDataSubcommandOption, ApplicationCommandOptionType, ButtonStyle, ComponentType } from 'discord-api-types/v10';
-import type { ChatInputRunOptions } from '../../../structures';
-import { Executor } from '../../../structures/Executor';
+import type { ChatInputRunOptions } from '../../../classes';
+import { Executor } from '../../../classes/Executor';
 import type { Suki } from '../../../Suki';
 
 export default class UserBannerSlashExecutor extends Executor {

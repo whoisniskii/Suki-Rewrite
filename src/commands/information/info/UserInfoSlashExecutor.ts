@@ -1,6 +1,6 @@
 import { APIApplicationCommandInteractionDataSubcommandOption, APIEmbed, APIUser, ApplicationCommandOptionType } from 'discord-api-types/v10';
-import type { ChatInputRunOptions, CommandContext } from '../../../structures';
-import { Executor } from '../../../structures/Executor';
+import type { ChatInputRunOptions, CommandContext } from '../../../classes';
+import { Executor } from '../../../classes/Executor';
 import type { Suki } from '../../../Suki';
 
 export default class UserInfoSlashExecutor extends Executor {

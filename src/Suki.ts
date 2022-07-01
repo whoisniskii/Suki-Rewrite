@@ -1,9 +1,7 @@
 import * as sentry from '@sentry/node';
 import { lstat, readdir } from 'node:fs/promises';
 import { request } from 'undici';
-import { Command, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './structures';
-import { Functions } from './utils/Functions';
-import Logger from './utils/Logger';
+import { Command, ExecutorManager, Functions, Logger, SukiCommand, SukiExecutor, WebServer } from './classes';
 // @ts-ignore
 import config from '../config';
 
@@ -87,6 +85,7 @@ class Suki {
     }
 
     this.server.start();
+    // this.functions.registerCommands();
   }
 
   #isDir(path: string) {
