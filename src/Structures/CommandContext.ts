@@ -75,7 +75,7 @@ class CommandContext {
     this.response.status(200).send({
       type: InteractionResponseType.DeferredChannelMessageWithSource,
       data: {
-        flags: ephemeral ? 64 : undefined
+        flags: ephemeral ? 1 << 6 : undefined
       }
     });
   }

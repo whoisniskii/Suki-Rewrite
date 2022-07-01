@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
-import { ChatInputRunOptions, Command } from '../../Structures';
+import { ChatInputRunOptions, Command } from '../../structures';
 import type { Suki } from '../../Suki';
 
 export default class UserExecutor extends Command {
@@ -55,7 +55,6 @@ export default class UserExecutor extends Command {
     this.executorData = [
       {
         name: 'View avatar',
-
         type: ApplicationCommandType.User
       },
       {

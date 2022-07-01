@@ -1,6 +1,6 @@
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
-import type { ExecutorRunOptions } from '../../../Structures';
-import { Executor } from '../../../Structures/Executor';
+import type { ExecutorRunOptions } from '../../../structures';
+import { Executor } from '../../../structures/Executor';
 import type { Suki } from '../../../Suki';
 
 export default class UserAvatarUserExecutor extends Executor {
@@ -16,13 +16,7 @@ export default class UserAvatarUserExecutor extends Executor {
 
     const user = await context.fetchUser(context.interaction.data.target_id);
 
-    let avatarUrl: string;
-
-    if (user.avatar) {
-      avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'png'}?size=512`;
-    } else {
-      avatarUrl = `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator) % 5}.png`;
-    }
+    const avatarUrl = this.client.functions.displayAvatarURL(user);
 
     context.editInteraction({
       embeds: [

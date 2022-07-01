@@ -1,7 +1,7 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import * as sentry from '@sentry/node';
 import { APIApplication, APIEmbed, APIUser, Routes } from 'discord-api-types/v10';
-import { DISCORD_API_URL } from '../Structures';
+import { DISCORD_API_URL } from '../structures';
 import type { Suki } from '../Suki';
 
 export class Functions {
@@ -14,7 +14,7 @@ export class Functions {
   }
 
   async getApplication(applicationId: string) {
-    return (await this.client.request(`https://discord.com/api/v10/applications/${applicationId}/rpc`, { method: 'GET' }).then(data => data.body.json())) as APIApplication;
+    return (await this.client.request(`https://discord.com/api/v10/applications/${applicationId}/rpc`).then(data => data.body.json())) as APIApplication;
   }
 
   async registerCommands() {
@@ -48,16 +48,18 @@ export class Functions {
     return Math.round(DiscordSnowflake.timestampFrom(userId) / 1000);
   }
 
-  displayAvatarURL(user: APIUser | undefined, size?: number) {
-    if (!user?.avatar && !user) return 'https://cdn.discordapp.com/embed/avatars/0.png';
+  displayAvatarURL(user?: APIUser, size = 512) {
+    if (!user) return 'https://cdn.discordapp.com/embed/avatars/0.png';
+    if (!user.avatar) return `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator) % 5}.png`;
 
-    return (
-      `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar?.startsWith('a_') ? 'gif' : 'png'}?size=${size?.toString() ?? '512'}` ??
-      `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator) % 5}.png`
-    );
+    return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'png'}?size=${size}`;
   }
 
-  createEmbed(data: Partial<APIEmbed>, user?: APIUser): APIEmbed {
+  displayBannerURL(user: APIUser, size = 512) {
+    return `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.${user.banner?.startsWith('a_') ? 'gif' : 'png'}?size=${size}`;
+  }
+
+  createEmbed(data: Partial<APIEmbed>, user?: APIUser) {
     if (!user)
       return {
         ...data

@@ -1,6 +1,6 @@
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
-import type { ExecutorRunOptions } from '../../../Structures';
-import { Executor } from '../../../Structures/Executor';
+import type { ExecutorRunOptions } from '../../../structures';
+import { Executor } from '../../../structures/Executor';
 import type { Suki } from '../../../Suki';
 
 export default class UserBannerUserExecutor extends Executor {
@@ -21,7 +21,7 @@ export default class UserBannerUserExecutor extends Executor {
       return;
     }
 
-    const bannerUrl = `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.${user.banner?.startsWith('a_') ? 'gif' : 'png'}?size=512`;
+    const bannerUrl = this.client.functions.displayBannerURL(user);
 
     context.editInteraction({
       embeds: [

@@ -1,9 +1,9 @@
 import * as sentry from '@sentry/node';
 import { lstat, readdir } from 'node:fs/promises';
 import { request } from 'undici';
-import { Command, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './Structures';
-import { Functions } from './Utils/Functions';
-import Logger from './Utils/Logger';
+import { Command, ExecutorManager, SukiCommand, SukiExecutor, WebServer } from './structures';
+import { Functions } from './utils/Functions';
+import Logger from './utils/Logger';
 // @ts-ignore
 import config from '../config';
 

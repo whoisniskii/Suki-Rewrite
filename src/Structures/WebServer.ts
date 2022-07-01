@@ -99,7 +99,7 @@ class WebServer {
 
       context.replyInteraction({
         content: 'An error occurred while executing this command.',
-        flags: 64
+        flags: 1 << 6
       });
     }
   }

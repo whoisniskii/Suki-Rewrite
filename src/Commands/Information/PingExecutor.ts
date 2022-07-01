@@ -1,5 +1,5 @@
 import { ApplicationCommandType } from 'discord-api-types/v10';
-import { ChatInputRunOptions, Command } from '../../Structures';
+import { ChatInputRunOptions, Command } from '../../structures';
 import type { Suki } from '../../Suki';
 
 export default class PingExecutor extends Command {
