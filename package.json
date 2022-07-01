@@ -1,13 +1,13 @@
 {
-  "name": "suki-rewrite",
-  "version": "0.0.1",
+  "name": "suki",
+  "version": "1.0.0",
+  "private": true,
   "main": "./build/src/SukiLauncher.js",
   "scripts": {
     "start": "tsc --project tsconfig.json && cd build && node src/SukiLauncher.js",
     "lint": "npx eslint src --ext .ts --fix",
     "types:check": "npx tsc --noEmit --incremental false",
-    "build": "tsc --project tsconfig.json",
-    "generate": "prisma generate"
+    "build": "tsc --project tsconfig.json"
   },
   "license": "GPL-3.0 license",
   "dependencies": {
