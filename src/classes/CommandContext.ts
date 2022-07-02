@@ -1,3 +1,4 @@
+import { isChatInputApplicationCommandInteraction } from 'discord-api-types/utils/v10';
 import {
   APIApplicationCommandInteraction,
   APIChatInputApplicationCommandInteraction,
@@ -46,6 +47,15 @@ class CommandContext {
 
   get guildId() {
     return this.interaction.guild_id;
+  }
+
+  targetUsers() {
+    if (!isChatInputApplicationCommandInteraction(this.interaction)) return null;
+    const data = this.interaction.data.resolved?.users;
+
+    if (!data) return null;
+
+    return data[Object.keys(data)[0]];
   }
 
   replyInteraction(data: APIInteractionResponseCallbackData) {
