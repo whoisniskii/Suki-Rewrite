@@ -36,10 +36,9 @@ class Functions {
         body: JSON.stringify([...rawCmds, ...rawExecutors])
       })
       .catch(err => {
-        if (this.client.config.sentryConfig.sentryDSN && this.client.config.sentryConfig.useSentry) {
-          sentry.captureException(err);
-        }
-
+        const { sentryDSN, useSentry } = this.client.config.sentryConfig;
+        if (!sentryDSN && !useSentry) return;
+        sentry.captureException(err);
         this.client.logger.error(err, 'REGISTER');
       });
 
@@ -50,10 +49,8 @@ class Functions {
     return Math.round(DiscordSnowflake.timestampFrom(userId) / 1000);
   }
 
-  displayAvatarURL(user?: APIUser, size = 512) {
-    if (!user) return 'https://cdn.discordapp.com/embed/avatars/0.png';
+  displayAvatarURL(user: APIUser, size = 512) {
     if (!user.avatar) return `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator) % 5}.png`;
-
     return `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'png'}?size=${size}`;
   }
 
@@ -61,7 +58,7 @@ class Functions {
     return `https://cdn.discordapp.com/banners/${user.id}/${user.banner}.${user.banner?.startsWith('a_') ? 'gif' : 'png'}?size=${size}`;
   }
 
-  createEmbed(data: Partial<APIEmbed>, user?: APIUser) {
+  createEmbed(data: Partial<APIEmbed>, user?: APIUser): APIEmbed {
     if (!user)
       return {
         ...data
