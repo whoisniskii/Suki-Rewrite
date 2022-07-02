@@ -1,4 +1,4 @@
-import { APIApplicationCommandInteractionDataStringOption, ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType, ApplicationCommandType } from 'discord-api-types/v10';
 import { inspect } from 'util';
 import { ChatInputRunOptions, Command } from '../../classes';
 import type { Suki } from '../../Suki';
@@ -37,8 +37,7 @@ export default class EvalExecutor extends Command {
     };
 
     try {
-      const data = context.interaction.data.options?.find(x => x.type === ApplicationCommandOptionType.String) as APIApplicationCommandInteractionDataStringOption;
-      const evaluate = await eval(data.value);
+      const evaluate = await eval(context.getString('code') as string);
 
       context.editInteraction({
         content: `\`\`\`js\n${clean(inspect(evaluate, { depth: 0 }).slice(0, 1970))}\n\`\`\``

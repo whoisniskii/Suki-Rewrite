@@ -14,7 +14,7 @@ export default class UserAvatarSlashExecutor extends Executor {
   async execute({ context }: ChatInputRunOptions) {
     context.showLoading(false);
 
-    const userId = context.targetUsers()?.id ?? context.user?.id;
+    const userId = context.targetUser()?.id ?? context.user?.id;
 
     const user = await context.fetchUser(userId as string);
 

@@ -1,10 +1,12 @@
 import { isChatInputApplicationCommandInteraction } from 'discord-api-types/utils/v10';
 import {
   APIApplicationCommandInteraction,
+  APIApplicationCommandInteractionDataStringOption,
   APIChatInputApplicationCommandInteraction,
   APIContextMenuInteraction,
   APIInteractionResponseCallbackData,
   APIUser,
+  ApplicationCommandOptionType,
   InteractionResponseType,
   RESTPatchAPIChannelMessageResult,
   RESTPostAPIChannelMessageJSONBody,
@@ -49,13 +51,39 @@ class CommandContext {
     return this.interaction.guild_id;
   }
 
-  targetUsers() {
+  targetUser() {
     if (!isChatInputApplicationCommandInteraction(this.interaction)) return null;
     const data = this.interaction.data.resolved?.users;
+    return data?.[Object.keys(data)[0]] ?? null;
+  }
 
-    if (!data) return null;
+  targetMember() {
+    if (!isChatInputApplicationCommandInteraction(this.interaction)) return null;
+    const data = this.interaction.data.resolved?.members;
+    return data?.[Object.keys(data)[0]] ?? null;
+  }
 
-    return data[Object.keys(data)[0]];
+  targetRole() {
+    if (!isChatInputApplicationCommandInteraction(this.interaction)) return null;
+    const data = this.interaction.data.resolved?.roles;
+    return data?.[Object.keys(data)[0]] ?? null;
+  }
+
+  targetChannel() {
+    if (!isChatInputApplicationCommandInteraction(this.interaction)) return null;
+    const data = this.interaction.data.resolved?.channels;
+    return data?.[Object.keys(data)[0]] ?? null;
+  }
+
+  targetAttachment() {
+    if (!isChatInputApplicationCommandInteraction(this.interaction)) return null;
+    const data = this.interaction.data.resolved?.attachments;
+    return data?.[Object.keys(data)[0]] ?? null;
+  }
+
+  getString(name: string) {
+    if (!isChatInputApplicationCommandInteraction(this.interaction)) return null;
+    return (this.interaction.data.options?.find(x => x.type === ApplicationCommandOptionType.String && x.name === name) as APIApplicationCommandInteractionDataStringOption).value;
   }
 
   replyInteraction(data: APIInteractionResponseCallbackData) {

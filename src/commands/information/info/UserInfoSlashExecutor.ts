@@ -14,7 +14,7 @@ export default class UserInfoSlashExecutor extends Executor {
   async execute({ context }: ChatInputRunOptions) {
     context.showLoading(false);
 
-    const userId = context.targetUsers()?.id ?? context.user?.id;
+    const userId = context.targetUser()?.id ?? context.user?.id;
 
     const user = await context.fetchUser(userId as string);
 
@@ -28,32 +28,32 @@ export default class UserInfoSlashExecutor extends Executor {
     } else context.editInteraction({ embeds: [await this.createMemberEmbed(context, user)] });
   }
 
-  createMemberEmbed(context: CommandContext, member: APIUser): APIEmbed {
+  createMemberEmbed(context: CommandContext, user: APIUser): APIEmbed {
     return this.client.functions.createEmbed(
       {
         author: {
           name: 'User information'
         },
         thumbnail: {
-          url: member.avatar
-            ? `https://cdn.discordapp.com/avatars/${member.id}/${member.avatar}.${member.avatar.startsWith('a_') ? 'gif' : 'png'}?size=1024`
-            : `https://cdn.discordapp.com/embed/avatars/${Number(member.discriminator) % 5}.png`
+          url: user.avatar
+            ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar.startsWith('a_') ? 'gif' : 'png'}?size=1024`
+            : `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator) % 5}.png`
         },
-        description: `[**${member.username}**](https://discord.com/users/${member.id})`,
+        description: `[**${user.username}**](https://discord.com/users/${user.id})`,
         fields: [
           {
             name: '💻 ID on Discord',
-            value: `\`${member.id}\``,
+            value: `\`${user.id}\``,
             inline: true
           },
           {
             name: '🏷️ Tag on Discord',
-            value: `\`${member.username}#${member.discriminator}\``,
+            value: `\`${user.username}#${user.discriminator}\``,
             inline: true
           },
           {
             name: '📅 Account Creation Date',
-            value: `<t:${Math.round(this.client.functions.userCreatedTimestamp(member.id))}:F> (<t:${Math.round(this.client.functions.userCreatedTimestamp(member.id))}:R>)`,
+            value: `<t:${Math.round(this.client.functions.userCreatedTimestamp(user.id))}:F> (<t:${Math.round(this.client.functions.userCreatedTimestamp(user.id))}:R>)`,
             inline: false
           }
         ]
