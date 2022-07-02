@@ -17,7 +17,7 @@ export default class UserBannerUserExecutor extends Executor {
     const user = await context.fetchUser(context.interaction.data.target_id);
 
     if (!user.banner) {
-      context.editInteraction({ content: 'This user has no banner.' });
+      context.editInteraction({ content: "This user doesn't has a banner." });
       return;
     }
 

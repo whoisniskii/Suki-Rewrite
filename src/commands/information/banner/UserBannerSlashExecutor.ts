@@ -14,12 +14,12 @@ export default class UserBannerSlashExecutor extends Executor {
   async execute({ context }: ChatInputRunOptions) {
     context.showLoading(false);
 
-    const userId = context.targetUsers()?.id ?? context.user?.id;
+    const userId = context.targetUser()?.id ?? context.user?.id;
 
     const user = await context.fetchUser(userId as string);
 
     if (!user.banner) {
-      context.editInteraction({ content: 'This user has no banner.' });
+      context.editInteraction({ content: "This user doesn't has a banner." });
       return;
     }
 
