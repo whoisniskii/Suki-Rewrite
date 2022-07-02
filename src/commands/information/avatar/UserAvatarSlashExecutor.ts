@@ -1,4 +1,4 @@
-import { APIApplicationCommandInteractionDataSubcommandOption, ApplicationCommandOptionType, ButtonStyle, ComponentType } from 'discord-api-types/v10';
+import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import type { ChatInputRunOptions } from '../../../classes';
 import { Executor } from '../../../classes/Executor';
 import type { Suki } from '../../../Suki';
@@ -7,18 +7,16 @@ export default class UserAvatarSlashExecutor extends Executor {
   constructor(client: Suki) {
     super(client);
 
-    this.name = 'user';
+    this.name = 'user avatar';
     this.type = 'slash';
   }
 
   async execute({ context }: ChatInputRunOptions) {
     context.showLoading(false);
 
-    const data = context.interaction.data.options?.find(x => x.type === ApplicationCommandOptionType.Subcommand && x.name === 'avatar') as APIApplicationCommandInteractionDataSubcommandOption;
+    const userId = context.targetUsers()?.id ?? context.user?.id;
 
-    const userId = (data.options?.find(x => x.type === ApplicationCommandOptionType.User)?.value as string) ?? context.user?.id;
-
-    const user = await context.fetchUser(userId);
+    const user = await context.fetchUser(userId as string);
 
     const avatarUrl = this.client.functions.displayAvatarURL(user);
 
