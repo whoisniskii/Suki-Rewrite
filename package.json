@@ -15,8 +15,8 @@
     "@sapphire/snowflake": "^3.2.2",
     "@sentry/node": "^7.3.1",
     "discord-api-types": "^0.36.0",
-    "discord-interactions": "^3.2.0",
     "fastify": "^4.2.0",
+    "tweetnacl": "^1.0.3",
     "undici": "^5.5.1"
   },
   "devDependencies": {

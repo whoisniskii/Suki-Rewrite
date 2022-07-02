@@ -1,8 +1,8 @@
 import fastifyRateLimit from '@fastify/rate-limit';
 import * as sentry from '@sentry/node';
 import { APIApplicationCommandInteraction, APIInteraction, InteractionResponseType, InteractionType } from 'discord-api-types/v10';
-import { verifyKey } from 'discord-interactions';
 import { fastify, FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import nacl from 'tweetnacl';
 import { CommandContext } from '.';
 import type { Suki } from '../Suki';
 
@@ -29,19 +29,15 @@ class WebServer {
   }
 
   handleRequest(request: FastifyRequest, response: FastifyReply) {
-    const signature = request.headers['x-signature-ed25519'] as string;
+    const signature = request.headers['xmi-signature-ed25519'] as string;
     const timestamp = request.headers['x-signature-timestamp'] as string;
+    const body = JSON.stringify(request.body);
 
-    if (!signature || !timestamp || !request.body) return response.status(401).send('Invalid signature');
-
-    const rawBody = JSON.stringify(request.body);
-    const isValidRequest = verifyKey(rawBody, signature, timestamp, this.client.config.interactions.publicKey);
-
+    const isValidRequest = nacl.sign.detached.verify(Buffer.from(timestamp + body), Buffer.from(signature, 'hex'), Buffer.from(this.client.config.interactions.publicKey, 'hex'));
     if (!isValidRequest) return response.code(401).send('Invalid signature');
 
     try {
       const interaction = request.body as APIInteraction;
-
       const ctx = new CommandContext(interaction as APIApplicationCommandInteraction, this.client, response);
 
       switch (interaction.type) {
