@@ -24,19 +24,12 @@ class ExecutorManager {
   retreive(data: APIApplicationCommandInteraction) {
     const { name, type } = data.data;
 
-    let commandName = name;
-
-    if (data.data.type === ApplicationCommandType.ChatInput) {
-      const subcommandName = data.data.options?.find(x => x.type === ApplicationCommandOptionType.Subcommand)?.name;
-
-      if (data.data.options?.find(x => x.type === ApplicationCommandOptionType.Subcommand)) {
-        commandName = `${name} ${subcommandName}`;
-      }
-    }
-
     switch (type) {
-      case ApplicationCommandType.ChatInput:
+      case ApplicationCommandType.ChatInput: {
+        const subcommand = data.data.options?.find(x => x.type === ApplicationCommandOptionType.Subcommand);
+        const commandName = `${name} ${subcommand?.name ?? ''}`.trim();
         return this.get(commandName, 'slash');
+      }
       case ApplicationCommandType.User:
         return this.get(name, 'user');
       case ApplicationCommandType.Message:
