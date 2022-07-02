@@ -75,16 +75,14 @@ class Suki {
   async start() {
     await this.loadSlashCommands();
     await this.loadCommandExecutors();
-
-    if (this.config.sentryConfig.sentryDSN && this.config.sentryConfig.useSentry) {
-      sentry.init({
-        dsn: this.config.sentryConfig.sentryDSN
-      });
-      process.on('unhandledRejection', err => sentry.captureException(err));
-      this.logger.info('Sentry initialized successfully.', 'SENTRY');
-    }
-
     this.server.start();
+
+    const { sentryDSN, useSentry } = this.config.sentryConfig;
+    if (!sentryDSN && !useSentry) return;
+
+    sentry.init({ dsn: sentryDSN });
+    process.on('unhandledRejection', err => sentry.captureException(err));
+    this.logger.info('Sentry initialized successfully.', 'SENTRY');
     // this.functions.registerCommands();
   }
 

@@ -36,10 +36,10 @@ class Functions {
         body: JSON.stringify([...rawCmds, ...rawExecutors])
       })
       .catch(err => {
+        this.client.logger.error(err, 'REGISTER');
         const { sentryDSN, useSentry } = this.client.config.sentryConfig;
         if (!sentryDSN && !useSentry) return;
         sentry.captureException(err);
-        this.client.logger.error(err, 'REGISTER');
       });
 
     this.client.logger.info(`Posted ${this.client.commands.length} commands to Discord!`, 'COMMANDS');

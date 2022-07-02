@@ -51,17 +51,19 @@ class WebServer {
           response.status(400).send({ error: 'Unknown Type' });
       }
     } catch (error: any) {
-      if (this.client.config.sentryConfig.sentryDSN && this.client.config.sentryConfig.useSentry) {
-        sentry.withScope(scope => {
-          scope.setExtras({
-            request: JSON.stringify(request.body),
-            error: error.message
-          });
-          sentry.captureException(error);
+      const { sentryDSN, useSentry } = this.client.config.sentryConfig;
+      if (!sentryDSN && !useSentry) return null;
+
+      sentry.withScope(scope => {
+        scope.setExtras({
+          request: JSON.stringify(request.body),
+          error: error.message
         });
-      }
+        sentry.captureException(error);
+      });
 
       this.client.logger.error(error, 'WEBSERVER');
+      return null;
     }
 
     return null;
@@ -81,21 +83,22 @@ class WebServer {
     } catch (err) {
       this.client.logger.error(err, 'WEBSERVER');
 
-      if (this.client.config.sentryConfig.sentryDSN && this.client.config.sentryConfig.useSentry) {
-        sentry.withScope(scope => {
-          scope.setExtras({
-            command: command.data.name,
-            args: JSON.stringify(context.rawData.resolved),
-            channelId: context.channelId,
-            user: `${context.user?.id}#${context.user?.discriminator} (${context.user?.username})`
-          });
-          sentry.captureException(err);
-        });
-      }
-
       context.replyInteraction({
         content: 'An error occurred while executing this command.',
         flags: 1 << 6
+      });
+
+      const { sentryDSN, useSentry } = this.client.config.sentryConfig;
+      if (!sentryDSN && !useSentry) return;
+
+      sentry.withScope(scope => {
+        scope.setExtras({
+          command: command.data.name,
+          args: JSON.stringify(context.rawData.resolved),
+          channelId: context.channelId,
+          user: `${context.user?.id}#${context.user?.discriminator} (${context.user?.username})`
+        });
+        sentry.captureException(err);
       });
     }
   }
