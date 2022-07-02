@@ -29,7 +29,7 @@ class WebServer {
   }
 
   handleRequest(request: FastifyRequest, response: FastifyReply) {
-    const signature = request.headers['xmi-signature-ed25519'] as string;
+    const signature = request.headers['x-signature-ed25519'] as string;
     const timestamp = request.headers['x-signature-timestamp'] as string;
     const body = JSON.stringify(request.body);
 
